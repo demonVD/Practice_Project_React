@@ -15,30 +15,39 @@ class Music extends React.Component{
                     artist:"Poets and fall"
                 }
             ],
-            users:[]
+            timezone:[],
+            summary:[]
         }
     }
     handleSubmit(e){
        // console.log("yes");
       // site=this.refs.track.value;
         console.log(this.refs.track.value);
-        e.preventDefault();
-
-    }
-    componentWillMount(){
-        axios.get("https://jsonplaceholder.typicode.com/users").then(
+        axios.get("https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/d11fcd47dc2d9ce975278e7e52e38550/12.971599,77.594563").then(
             function(response){
                 //console.log(response);
-                var users=response.data;
-               this.setState({users:users});
-                console.log(this.state.users);
+                console.log("going to url");
+                var forecast=response.data;
+                console.log(forecast);
+                var timezone=forecast.timezone
+                var summary=forecast.daily.summary;
+               this.setState({timezone:timezone,
+            summary:summary});
+                console.log(this.state.timezone);
+                console.log("daily"+this.state.summary);
             }.bind(this))
             .catch(function(error){
                 console.log(error);
             });
+        e.preventDefault();
+
+    }
+    componentWillMount(){
+      
     }
     render(){
-        var users=this.state.users;
+        var timezone=this.state.timezone;
+        var summary=this.state.summary;
         return(
             <div>
                 <h1>Music</h1>
@@ -46,7 +55,7 @@ class Music extends React.Component{
                 <select ref="track">{this.state.tracks.map(track=>
                     <option value={track.title} key={track.title}>{track.title}</option>)}
                 </select>
-                <div>{users.map(user=><h4 key={user.id}>{user.name}</h4>)}</div>
+                <div><h1>{timezone}</h1><h4>{summary}</h4></div>
                 <input type="submit" value="Submit"/>
                 </form>
             </div>
